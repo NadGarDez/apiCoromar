@@ -9,4 +9,4 @@ That api has the following characteristics:
 And also create a prank test for the product search function.
 
 
-If everyone wants to collaborate or sugest anything, the door is open. :D 
+If everyone wants to collaborate or sugest anything, the door is open. :D
