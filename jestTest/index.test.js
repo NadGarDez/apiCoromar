@@ -38,4 +38,5 @@ getFilters.forEach((item, i) => {
             e => console.log(e)
           )
 
+
 });
