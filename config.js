@@ -1,3 +1,3 @@
 module.exports = {
-  llave:"abcdq123"
+  llave:"abcd123"
 }

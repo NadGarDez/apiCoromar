@@ -4,11 +4,18 @@ const parser = require("body-parser")
 const {auth} = require("./services/auth/authGenerator.js")
 const {authMidd} = require("./middlewares/authMiddleware.js")
 const {createUser} = require("./services/user/user.js")
+const {productController} = require("./controllers/productController.js")
 
 let app = express()
 app.set("llave",llave)
 app.use(parser.urlencoded({extended:true}))
 app.use(parser.json())
+
+app.get(
+  "/p",
+  productController
+)
+
 
 app.post(
   "/auth",
@@ -22,12 +29,14 @@ app.post(
 app.use(
   authMidd
 )
+
 app.get(
   "/",
   (req,res)=>{
       res.send("hola mundo")
   }
 )
+
 
 
 app.listen(

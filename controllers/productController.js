@@ -1,26 +1,49 @@
-const {connection}
+const {getProducts,setProducts,deleteProducts,updateProducts} = require("../services/products/products.js")
+const url = require("url")
 
-const getProducts = (req,res)=>{
 
-  const {filter} = req.body
+const controller = async (req,res)=>{
+    let data = ""
+    let result = ""
+    console.log(url.parse(req.url,true).query)
+
+    switch (req.method) {
+      case "POST":
+        data = req.body.data
+        result = await setProducts(data)
+        res.json(result)
+      break;
+      case "GET":
+        data = url.parse(req.url,true).query
+
+        try{
+          let result = await getProducts(JSON.parse(data.query))
+          res.json(result)
+        }
+        catch(e){
+          console.log(e)
+          res.json({
+            error:e
+          })
+        }
+
+      break;
+
+      case "PUT":
+        result = await updateProducts(data)
+        res.json(result)
+
+      break;
+
+      case "DELETE":
+        result = await deleteProducts(data)
+        res.json()
+      break
+
+    }
+
+
 
 }
 
-const setProducts = (req,res)=>{
-
-}
-
-const deleteProducts = (req,res)=>{
-
-}
-
-const updateProducts = (req,res)=>{
-
-}
-
-module.exports = {
-  getProducts:controller,
-  setProducts:setProducts,
-  deleteProducts:deleteProducts,
-  updateProducts:updateProducts
-}
+module.exports.productController = controller

@@ -20,6 +20,7 @@ const auth = async (req,res,next)=>{
 
   }
   else{
+    console.log("aqui")
     res.json({mensaje:"Token  no provista"})
   }
 
