@@ -1,12 +1,12 @@
 const {connection} = require("../db/dbConnection.js")
 const {Readable,Writable,Duplex,Transform} = require("stream")
 
-const getProducts = async (data) => {
+const getProducts = async (filter={},projection=null, sort=null, limit=null,skip= null) => {
   let result = ""
   const client = await connection()
   try{
 
-    let cursor =   client.db("limpiezaCoromar").collection("products").find(data.filter).project(data.projection).sort(null) 
+    let cursor =   client.collection("products").find(filter).project(projection).sort(sort).limit(limit).skip(skip)
     result = await cursor.toArray();
 
   }
@@ -14,11 +14,12 @@ const getProducts = async (data) => {
     result = e
   }
 
-
-
   return result
 
 }
+
+
+
 
 const setProducts = async (data) => {
 

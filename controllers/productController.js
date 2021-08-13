@@ -1,6 +1,6 @@
 const {getProducts,setProducts,deleteProducts,updateProducts} = require("../services/products/products.js")
 const url = require("url")
-
+const {searchProduct} = require("../services/query/queryProducts.js")
 
 const controller = async (req,res)=>{
     let data = ""
@@ -14,10 +14,10 @@ const controller = async (req,res)=>{
         res.json(result)
       break;
       case "GET":
-        data = url.parse(req.url,true).query
+        data = searchProduct(req.params)
 
         try{
-          let result = await getProducts(JSON.parse(data.query))
+          let result = await getProducts(data.filter,data.projection, data.sort, data.limit,data.skip)
           res.json(result)
         }
         catch(e){
@@ -45,5 +45,7 @@ const controller = async (req,res)=>{
 
 
 }
+
+
 
 module.exports.productController = controller

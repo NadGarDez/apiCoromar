@@ -12,7 +12,7 @@ app.use(parser.urlencoded({extended:true}))
 app.use(parser.json())
 
 app.get(
-  "/p",
+  "/p/:id/:typeProjection/:typeOrder/:limitStart/:matchType/:matchKey/:matchValue",
   productController
 )
 
