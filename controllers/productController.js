@@ -14,8 +14,10 @@ const controller = async (req,res)=>{
         res.json(result)
       break;
       case "GET":
-        data = searchProduct(req.params)
-
+        // there are to rewrite that section beacuse is not correctly working
+        data = new searchProduct(req.params)
+        console.log(req.params)
+        /*
         try{
           let result = await getProducts(data.filter,data.projection, data.sort, data.limit,data.skip)
           res.json(result)
@@ -25,7 +27,7 @@ const controller = async (req,res)=>{
           res.json({
             error:e
           })
-        }
+        }*/
 
       break;
 
