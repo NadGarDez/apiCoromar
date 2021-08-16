@@ -14,22 +14,21 @@ const getFilters = [ //here we should put the the filter that we will use to all
     typeOrder:"priceDesc",
     typeProjection:"preview",
     matchType:"noMatch",
-    limitStart:-1
+    limitStart:1
   },
   {
-    id:1,
     typeOrder:"datePublicationAsc",
     typeProjection:"publication",
     matchType:"general",
     matchValue:"HOLA",
-    limitStart:"1"
+    limitStart:100
   },
   {
     id:1,
     typeOrder:"datePublicationDesc",
     typeProjection:"publication",
     matchType:"noMatch",
-    limitStart:{}
+    limitStart:0
   },
   {
     id:1,
@@ -104,7 +103,7 @@ describe(
         `addProject function test // typeProjection = ${item.typeProjection}, index = ${i}`,
         ()=>{
           if (item.typeProjection == "preview") {
-            expect(query.query.project).toMatchObject(
+            expect(query.query.projection).toMatchObject(
               {
                 idUser:1,
                 _id:1,
@@ -116,7 +115,7 @@ describe(
             )
           }
           else {
-            expect(query.query.project).toMatchObject(
+            expect(query.query.projection).toMatchObject(
               {
                 idUser:1,
                 _id:1,
@@ -143,7 +142,7 @@ describe(
           else {
             query.addLimit()
             if (typeof item.limitStart === "undefined") {
-              expect(query.query.skip).toBeNull()
+              expect(query.query.skip).toBe(0)
             }
             else {
               expect(query.query.skip).not.toBeLessThan(0)
@@ -158,10 +157,15 @@ describe(
           if (typeof query.query.filter._id === "undefined") {
             switch (item.matchType) {
               case "general":
-                expect(JSON.stringify(query.query.filter)).toMatch(`$text:{$search:${item.matchValue}}`)
+                let objExpect = {
+                  $text: {$search:item.matchValue}
+                }
+                expect(JSON.stringify(query.query.filter)).toMatch(JSON.stringify(objExpect))
               break;
               case "specify":
-                expect(JSON.stringify(query.query.filter)).toMatch(`${item.matchKey}:${item.matchValue}}`)
+                objExpect = {}
+                objExpect[item.matchKey]=item.matchValue
+                expect(JSON.stringify(query.query.filter)).toMatch(JSON.stringify(objExpect))
 
               break;
 
@@ -178,17 +182,3 @@ describe(
 
   }
 )
-/*
-getFilters.forEach((item, i) => {
-      let query = ""
-
-      test(
-        `GetProduct test -> Params : ${JSON.stringify(item)}`,
-        ()=>{
-          query = `${url.local}/p/${item.id}/${item.typeProjection}/${item.typeOrder}/${item.limitStart}/${item.matchType}/${item.matchKey}/${item.matchValue}`
-          console.log(query)
-          expect(1).toBe(1)
-        
-
-        });
-})*/

@@ -11,6 +11,7 @@ const getProducts = async (filter={},projection=null, sort=null, limit=null,skip
 
   }
   catch(e){
+    console.log(e)
     result = e
   }
 
