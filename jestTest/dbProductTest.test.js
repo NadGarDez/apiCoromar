@@ -65,34 +65,6 @@ describe(
         }
       )
 
-      test(
-        "Match test",
-        ()=>{
-          if(item.matchType != "noMatch" ){
-            return fetch(`http://localhost:8080/p/${item.id}/${item.typeProjection}/${item.typeOrder}/${item.limitStart}/${item.matchType}/${item.matchKey}/${item.matchValue}`)
-            .then(
-              data => data.json()
-            )
-            .then(
-              data =>{
-                console.log(data)
-                const expected = [
-                  expect.stringMatching(item.matchValue),
-                ];
-                expect(JSON.stringify(data)).toEqual(
-                  expect.arrayContaining(expected)
-                )
-              }
-            )
-            .catch(
-              err => console.log(err)
-            )
-          }
-        }
-      )
-
-
-
 
 
     });
