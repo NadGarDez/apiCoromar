@@ -2,16 +2,18 @@ const jwt = require('jsonwebtoken')
 const {llave} = require("../config.js")
 
 const auth = async (req,res,next)=>{
-  const token = req.headers["access-token"]
+  
+  const token = req.header("Authorization");
   if(token){
     jwt.verify(
-      token,
+      token.split(' ')[1],
       llave,
       (err,decoded)=>{
         if(err){
           res.json({mensaje:"Token invalida"})
         }
         else{
+          console.log(decoded, 'decoded');
           req.decoded = decoded
           next()
         }
@@ -20,14 +22,37 @@ const auth = async (req,res,next)=>{
 
   }
   else{
-    console.log("aqui")
     res.json({mensaje:"Token  no provista"})
   }
 
 }
 
+const authSocket = (token,next,socket)=>{
+  const obj = {}
+  jwt.verify(
+    token,
+    llave,
+    (err,decoded)=>{
+     // console.log(err,decoded, this)
+      if(err){
+       // obj =  {status:'error', message:'invalid token'}
+        
+        next(new Error('Auth Error'))
+      }
+      else{
+       // obj = {status:'success', decoded}
+       socket.idUser = decoded._id;
+       next();
+      }
+    }
+  )
+  console.log(obj);
+  return obj;
+}
+
 
 
 module.exports={
-  authMidd:auth
+  authMidd:auth,
+  authSocket:authSocket
 }

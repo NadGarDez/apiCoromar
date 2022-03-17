@@ -2,16 +2,15 @@ const {connection} = require("../db/dbConnection.js")
 
 
 let userExist = async (user,pass)=>{
-  console.log(user)
   client = await connection()
   try{
-    result = await client.db("limpiezaCoromar").collection("users").find({user:user,pass:pass}).count()
-    console.log(result)
-    if(result>0){
-      return true
+    result = await client.collection("users").find({user:user,pass:pass}).project({ user:1 }).toArray();
+    console.log(result);
+    if(result.length > 0){
+      return result
     }
     else{
-      return false
+      return []
     }
   }
   catch(e){
@@ -26,9 +25,9 @@ let createUser = async (req,res)=>{
   console.log(req.body)
   client = await connection()
   try{
-    result = await client.db("limpiezaCoromar").collection("users").find({email:email}).count()
+    result = await client.collection("users").find({email:email}).count()
     if(result < 1){
-      let result = await client.db("limpiezaCoromar").collection("users").insertOne({user:user,email:email,pass:pass})
+      let result = await client.collection("users").insertOne({user:user,email:email,pass:pass})
       if(result.insertedCount==1){
         res.json(
           {

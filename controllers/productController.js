@@ -3,9 +3,10 @@ const url = require("url")
 const {searchProduct} = require("../services/query/queryProducts.js")
 
 const controller = async (req,res)=>{
+    console.log(req.decoded, 'decoded');
     let data = ""
     let result = ""
-    console.log(url.parse(req.url,true).query)
+  
 
     switch (req.method) {
       case "POST":
