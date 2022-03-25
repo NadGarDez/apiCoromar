@@ -13,7 +13,6 @@ const auth = async (req,res,next)=>{
           res.json({mensaje:"Token invalida"})
         }
         else{
-          console.log(decoded, 'decoded');
           req.decoded = decoded
           next()
         }
@@ -46,7 +45,6 @@ const authSocket = (token,next,socket)=>{
       }
     }
   )
-  console.log(obj);
   return obj;
 }
 

@@ -8,6 +8,7 @@ const {authMidd} = require("./middlewares/authMiddleware.js");
 const {createUser} = require("./services/user/user.js");
 const {productController} = require("./controllers/productController.js");
 const {ioConection} = require("./services/socket/socketConnection");
+const { sellerInformationController } = require("./controllers/sellerInformationController.js");
 
 let app = express()
 const server = http.createServer(app);
@@ -35,6 +36,11 @@ app.post(
 
 app.use(
   authMidd
+)
+
+app.get(
+  "/sellerInformation/:sellerId",
+  sellerInformationController
 )
 
 app.get(
