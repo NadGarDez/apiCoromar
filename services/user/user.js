@@ -1,17 +1,19 @@
+const res = require("express/lib/response");
 const {connection} = require("../db/dbConnection.js")
+const ObjectID = require('mongodb').ObjectID;
+console.log(ObjectID);
 
 
-let userExist = async (user,pass)=>{
-  console.log(user)
+const userExist = async (user,pass)=>{
   client = await connection()
   try{
-    result = await client.db("limpiezaCoromar").collection("users").find({user:user,pass:pass}).count()
-    console.log(result)
-    if(result>0){
-      return true
+    result = await client.collection("users").find({user:user,pass:pass}).project({ user:1 }).toArray();
+    console.log(result);
+    if(result.length > 0){
+      return result
     }
     else{
-      return false
+      return []
     }
   }
   catch(e){
@@ -21,14 +23,17 @@ let userExist = async (user,pass)=>{
 
 }
 
-let createUser = async (req,res)=>{
+
+// esto es un controlador no un servicio... cambiar a futuro
+
+const createUser = async (req,res)=>{
   const {user,email,pass} = req.body
   console.log(req.body)
   client = await connection()
   try{
-    result = await client.db("limpiezaCoromar").collection("users").find({email:email}).count()
+    result = await client.collection("users").find({email:email}).count()
     if(result < 1){
-      let result = await client.db("limpiezaCoromar").collection("users").insertOne({user:user,email:email,pass:pass})
+      let result = await client.collection("users").insertOne({user:user,email:email,pass:pass})
       if(result.insertedCount==1){
         res.json(
           {
@@ -53,12 +58,64 @@ let createUser = async (req,res)=>{
     return err
   }
 
+}
 
+
+const userInformation = async (id)=>{
+
+
+
+  client = await connection();
+  let result;
+  try {
+    result = await client.collection("users").find({_id:new ObjectID(id)}).toArray();
+    return result;
+  } catch (error) {
+    console.log(error, 'error seller information')
+    return error;
+  }
+}
+
+const userConnections = async (id)=>{
+  const client = await connection();
+  result;
+  try {
+    result = await client.collection("users").find({connections:{$elemMatch:{$eq:id}}}).project({connections:1}).toArray();
+  } catch (error) {
+    return error;
+  }
+
+  return result;
+}
+
+const createConnection = async (userId1, userId2)=>{
+  const client = await connection();
+  const count = await client.collection("users").find({connection:{$elemMatch:{$eq:userId2}}}).count();
+  if (count === 0) {
+    try {
+      result = await client.collection("users").updateOne({_id:ObjectID(userId1)},{$addToSet:{connections:userId2}});
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      throw new Error(error.message)
+    }
+    try {
+      result = await client.collection("users").updateOne({_id:ObjectID(userId2)},{$addToSet:{connections:userId1}});
+      console.log(result);
+    } catch (error) {
+      console.log(error)
+      throw new Error(error.message)
+    }
+  }
+  
 }
 
 module.exports = {
   userExist:userExist,
-  createUser:createUser
+  createUser:createUser,
+  userConnections:userConnections,
+  createConnection,
+  userInformation
 }
 
 

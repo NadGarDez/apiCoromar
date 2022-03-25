@@ -9,7 +9,7 @@ let mongo1 = async ()=>{
   try{
     await client.connect()
     await client.db("limpiezaCoromar").command({ping:1})
-    console.log("conectado")
+  //  console.log("conectado")
     return client.db("limpiezaCoromar")
   }
   catch(err){
