@@ -3,7 +3,6 @@ const url = require("url")
 const {searchProduct} = require("../services/query/queryProducts.js")
 
 const controller = async (req,res)=>{
-    console.log(req.decoded, 'decoded');
     let data = ""
     let result = ""
   
@@ -21,7 +20,6 @@ const controller = async (req,res)=>{
           req.params.limitStart = parseInt(req.params.limitStart)
           data = new searchProduct(req.params).generateQuery()
 
-          console.log(data)
 
           let result = await getProducts(data.filter,data.projection, data.sort, data.limit,data.skip)
           res.json(result)

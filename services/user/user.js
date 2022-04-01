@@ -62,13 +62,23 @@ const createUser = async (req,res)=>{
 
 
 const userInformation = async (id)=>{
-
-
-
   client = await connection();
   let result;
   try {
-    result = await client.collection("users").find({_id:new ObjectID(id)}).toArray();
+    result = await client.collection("users").find({_id:new ObjectID(id)}).project({avatar:1,user:1}).toArray();
+    return result;
+  } catch (error) {
+    console.log(error, 'error seller information')
+    return error;
+  }
+}
+
+const usersInformation = async (arr)=>{
+  client = await connection();
+  const ids = arr.map((item)=>ObjectID(item));
+  let result;
+  try {
+    result = await client.collection("users").find({_id:{$in:ids}}).project({avatar:1,user:1}).toArray();
     return result;
   } catch (error) {
     console.log(error, 'error seller information')
@@ -115,6 +125,7 @@ module.exports = {
   createUser:createUser,
   userConnections:userConnections,
   createConnection,
+  usersInformation,
   userInformation
 }
 

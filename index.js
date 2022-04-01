@@ -8,20 +8,18 @@ const {authMidd} = require("./middlewares/authMiddleware.js");
 const {createUser} = require("./services/user/user.js");
 const {productController} = require("./controllers/productController.js");
 const {ioConection} = require("./services/socket/socketConnection");
-const { sellerInformationController } = require("./controllers/sellerInformationController.js");
+const { partnerInformationController, partnersInformationController } = require("./controllers/parterController.js");
+const { messageController } = require("./controllers/messageController.js");
 
 let app = express()
 const server = http.createServer(app);
 
 ioConection(server);
 
-
 app.set("llave",llave)
 app.use(parser.urlencoded({extended:true}))
 app.use(parser.json())
 app.use(cors())
-
-
 
 app.post(
   "/auth",
@@ -33,14 +31,23 @@ app.post(
   createUser
 )
 
-
 app.use(
   authMidd
 )
 
+app.post(
+  "/getMessages",
+  messageController
+)
+
 app.get(
-  "/sellerInformation/:sellerId",
-  sellerInformationController
+  "/partnerInformation/:partnerId",
+  partnerInformationController
+)
+
+app.post(
+  "/partersInformation",
+  partnersInformationController
 )
 
 app.get(

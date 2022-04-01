@@ -16,6 +16,7 @@ const auth = async (req,res)=>{
     res.json(
       {
         mensaje:"autenticado",
+        _id:result[0]._id,
         token:token
       }
     )
