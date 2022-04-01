@@ -32,11 +32,11 @@ const onInfoAction = async (type,socket, userId="", clients)=>{
 }
 
 
-const onMessageAction = async (content,socket, toUser , clients, type)=>{
+const onMessageAction = async (content,socket, toUser ,group, clients, type)=>{
     // save on database
     let result;
     try {
-        result = await saveMessage(content,socket.idUser,toUser,type)
+        result = await saveMessage(content,socket.idUser,toUser,group,type)
 
         if (result.status==='success' && clientExist(receptorUserId,clients)) { // send message to the client
             socket.to(clients[item]).emit(type,{
