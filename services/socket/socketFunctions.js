@@ -5,9 +5,10 @@ const { userConnections } = require("../user/user")
 const onInfoAction = async (type,socket, userId="", clients)=>{
     switch (type) {
         case "chat/writing":
+            /*
             if (clientExist(userId,clients)) {
                 socket.to(clients[item]).emit(type,{userId});
-            }
+            }*/
             console.log('writing');
             break;
 
@@ -32,20 +33,44 @@ const onInfoAction = async (type,socket, userId="", clients)=>{
 }
 
 
-const onMessageAction = async (content,socket, toUser ,group, clients, type)=>{
+const onMessageAction = async (content,socket, toUser ,group_member, clients, type)=>{
     // save on database
+    const userId = socket.idUser;
     let result;
     try {
-        result = await saveMessage(content,socket.idUser,toUser,group,type)
+        result = await saveMessage(content,socket.idUser,toUser,group_member,type)
+        
+        if (clientExist(userId,clients)) { // send message to the client
+            socket.emit("chat/sendMessageResponse",result)
+        }
 
-        if (result.status==='success' && clientExist(receptorUserId,clients)) { // send message to the client
-            socket.to(clients[item]).emit(type,{
-                content,
-                from,
-                fromUser,
-                toUser,
-                type:'text'
-            })
+        if (result.status==='success' && clientExist(toUser,clients)) { // send message to the client
+            console.log('sending to partner')
+            socket.to(clients[toUser]).emit("chat/message",result)
+        }
+        
+    } catch (error) {
+        console.log(error)
+    }
+
+    //both
+/*
+    try {
+        await bothSender(content,socket.idUser,toUser,group_member,type,clients,socket)
+    } catch (error) {
+        console.log(error);
+    }
+    */
+}
+
+
+
+const bothSender = async (content,toUser,fromUser,group_member,type,clients,socket)=>{
+    try {
+        result = await saveMessage(`you say : ${content}`,fromUser,toUser,group_member,type)
+
+        if (result.status==='success' && clientExist(toUser,clients)) { // send message to the client
+            socket.emit("chat/message",result)
         }
         
     } catch (error) {
@@ -61,7 +86,7 @@ const onMessageAction = async (content,socket, toUser ,group, clients, type)=>{
 
 const clientExist = (id, clients)=>{
     const users = Object.keys(clients);
-    return Boolean(users.find((item)=>item.idUser === id));
+    return Boolean(users.find((item)=>item === id));
   };
 
 

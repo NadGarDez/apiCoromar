@@ -8,16 +8,18 @@ const socketEvents = (io)=>{
     
     io.on('connect', (socket) => {
 
-      
-        if (!clientExist(socket.idUser,clients)) {
-          const copy = {...clients};
-          copy[socket.idUser] = socket.id;
-          clients = copy;
-        }
-
+        const socketId =socket.id
+        clients = clients[socket.idUser] !== socketId ? {...clients, [socket.idUser]:socket.id} : clients;
+        socket.to(clients[socket.idUser]).emit("other", "hey")
         socket.on("test_message",
           (mss)=>{
             socket.emit("test_message",mss);
+          }
+        )
+        socket.on(
+          "disconnect",
+          ()=>{
+            delete clients[socket.idUser]
           }
         )
 
@@ -25,7 +27,6 @@ const socketEvents = (io)=>{
             "chat/create_connection",
             async (sellerId)=>{
                 // insert id in both user's connection array
-                console.log('creando coneccion');
                 await createConnection(socket.idUser, sellerId);
 
             }
@@ -41,13 +42,16 @@ const socketEvents = (io)=>{
 
         socket.on(
             "chat/message",
-            async (content, toUser , type)=>{
+            async (content, toUser , group_member,type)=>{
                 // send message to user
-                await onMessageAction(content,socket,toUser , clients, type)
+               await onMessageAction(content,socket,toUser ,group_member, clients, type)
+              
             }
         )
         
       });
+
+    
       
       io.on("connect_error", (err) => {
         console.log(`connect_error due to ${err.message}`);

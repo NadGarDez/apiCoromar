@@ -1,8 +1,7 @@
 const {connection} = require("../db/dbConnection.js");
 const ObjectID = require('mongodb').ObjectID;
 
-const saveMessage = async (content,fromUser,toUser,group,type)=>{
-    console.log(type), 'typeeeeeeeee';
+const saveMessage = async (content,fromUser,toUser,group_member,type)=>{
     const client = await connection();
     let result;
 
@@ -12,13 +11,13 @@ const saveMessage = async (content,fromUser,toUser,group,type)=>{
             content,
             fromUser,
             toUser,
-            group,
+            group_member,
             status:1,
             type
         })
 
         if (result.insertedCount === 1) {
-            return {status:'succes'}
+            return {status:'success',data:{...result.ops[0], create_at:ObjectID(result.insertedId).getTimestamp().toISOString()}}
         }
         else{
             return {status:'error'}
@@ -47,7 +46,6 @@ const getMessages = async (userId, idLimit=null)=>{
 
     try {
         result = await client.collection("chat").find(query).toArray()
-        console.log(result)
 
         /*
         const fromFilter = result.reduce(
