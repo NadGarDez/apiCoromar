@@ -7,7 +7,7 @@ const {socketEvents} = require("./socketEvents");
 const ioConection = (server)=>{
  
   const io  = new Server(server, {cors: {
-      origin: "http://127.0.0.1"
+      origin: "http://localhost:3000"
     } }
   );
 

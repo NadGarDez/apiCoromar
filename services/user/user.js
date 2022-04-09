@@ -8,7 +8,6 @@ const userExist = async (user,pass)=>{
   client = await connection()
   try{
     result = await client.collection("users").find({user:user,pass:pass}).project({ user:1 }).toArray();
-    console.log(result);
     if(result.length > 0){
       return result
     }
@@ -28,7 +27,6 @@ const userExist = async (user,pass)=>{
 
 const createUser = async (req,res)=>{
   const {user,email,pass} = req.body
-  console.log(req.body)
   client = await connection()
   try{
     result = await client.collection("users").find({email:email}).count()
@@ -104,14 +102,12 @@ const createConnection = async (userId1, userId2)=>{
   if (count === 0) {
     try {
       result = await client.collection("users").updateOne({_id:ObjectID(userId1)},{$addToSet:{connections:userId2}});
-      console.log(result);
     } catch (error) {
       console.log(error);
       throw new Error(error.message)
     }
     try {
       result = await client.collection("users").updateOne({_id:ObjectID(userId2)},{$addToSet:{connections:userId1}});
-      console.log(result);
     } catch (error) {
       console.log(error)
       throw new Error(error.message)

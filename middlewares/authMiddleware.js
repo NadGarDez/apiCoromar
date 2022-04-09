@@ -35,6 +35,8 @@ const authSocket = (token,next,socket)=>{
      // console.log(err,decoded, this)
       if(err){
        // obj =  {status:'error', message:'invalid token'}
+       socket.emit('error', err);
+
         
         next(new Error('Auth Error'))
       }
