@@ -39,7 +39,6 @@ partnersInformationController = async (req, res)=>{
             },
             {}
         )
-        console.log(ordered)
         res.json({
             status:'succes',
             data:ordered

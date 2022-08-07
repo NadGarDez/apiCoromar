@@ -1,7 +1,6 @@
 const res = require("express/lib/response");
 const {connection} = require("../db/dbConnection.js")
 const ObjectID = require('mongodb').ObjectID;
-console.log(ObjectID);
 
 
 const userExist = async (user,pass)=>{

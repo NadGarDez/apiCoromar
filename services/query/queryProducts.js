@@ -1,3 +1,4 @@
+const {ObjectId} = require("mongodb")
 class QueryProduct {
 
 
@@ -42,7 +43,7 @@ class QueryProduct {
     }
     else if(typeof params.id !== "object" ){
       this.query.filter = {
-        _id:parseInt(params.id)
+        _id:new ObjectId(params.id)
       }
 
     }

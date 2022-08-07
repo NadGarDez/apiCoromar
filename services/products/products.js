@@ -8,7 +8,6 @@ const getProducts = async (filter={},projection=null, sort=null, limit=null,skip
 
     let cursor =   client.collection("products").find(filter).project(projection).sort(sort).limit(limit).skip(skip)
     result = await cursor.toArray();
-
   }
   catch(e){
     console.log(e)
