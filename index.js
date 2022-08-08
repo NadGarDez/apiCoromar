@@ -64,9 +64,9 @@ app.get(
 
 
 
-server.listen(
+const listener = server.listen(
   7070,
   ()=>{
-    console.log("iniciado el servidor")
+    console.log("iniciado el servidor", listener.address())
   }
 )
