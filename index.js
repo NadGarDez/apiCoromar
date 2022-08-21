@@ -10,7 +10,7 @@ const {productController} = require("./controllers/productController.js");
 const {ioConection} = require("./services/socket/socketConnection");
 const { partnerInformationController, partnersInformationController } = require("./controllers/parterController.js");
 const { messageController } = require("./controllers/messageController.js");
-
+require('dotenv').config()
 let app = express()
 const server = http.createServer(app);
 
